@@ -7,7 +7,7 @@ using namespace std;
 
 fstream& operator<<(fstream& fout, const Truba& p)
 {
-	fout << p.id<< endl << p.d << endl << p.l << endl << p.remont<<p.idout<<p.idin;
+	fout << p.id<< endl << p.d << endl << p.l << endl << p.remont<<endl<<p.idout<<endl<<p.idin;
 	return fout;
 }
 
@@ -58,10 +58,10 @@ Truba::Truba(std::fstream& fin)
 	fin >> this->id >> this->d >> this->l >> this->remont>>this->idout>>this->idin;
 }
 
-Truba::Truba(int idout, int idin)
+void Truba::Truba_in_out(int out, int in)
 {
-	this->idout=idout;
-	this->idin=idin;
+	this->idout=out;
+	this->idin=in;
 }
 
 

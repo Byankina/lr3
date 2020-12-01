@@ -21,7 +21,7 @@ public:
     void Edit_pipe();
 	Truba();
 	Truba(std::fstream& fin);
-	Truba(int idout, int idin);
+	void Truba_in_out(int idout, int idin);
 	static int MaxID;
 
 };

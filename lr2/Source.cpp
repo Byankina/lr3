@@ -110,7 +110,7 @@ int GetIDKS(const unordered_map<int, KS>& kss)
 {
 	unordered_map <int, KS> ::iterator id;
 	int i;
-	while ((cin >> i).fail()||(kss.find(i)==kss.end(i)))
+	while ((cin >> i).fail()||(kss.find(i)==kss.end()))
 	{
 		cin.clear();
 		cin.ignore(10000, '\n');
@@ -118,35 +118,37 @@ int GetIDKS(const unordered_map<int, KS>& kss)
 	}
 	return i;
 }
-unordered_set <int> ver(unordered_map<int, Truba> pipe, unordered_map<int, KS>kss)
-{
-	unordered_map <int, Truba> ::iterator nom;
-	unordered_set <int> ver;
-	int idout;
-	int idin;
-	cout << "Truba ID, which connected KSs";
-	int id = GetCorrectNumber(1000);
-	nom = pipe.find(id);
-	if (nom == pipe.end())
-		cout << "Truba with this ID is not found";
-	else
-	{
-		cout << "Truba out (KS ID)";
-		idout=GetIDKS(kss);
-		cout << "Truba in (KS ID)";
-		idin=GetIDKS(kss);
-		Truba(idout, idin);
-		ver.insert(idout);
-		ver.insert(idin);
-	}
-	return ver;
-}
+//unordered_set <int> ver(unordered_map<int, Truba> pipe, unordered_map<int, KS>kss)
+//{
+	//unordered_map <int, Truba> ::iterator nom;
+	////unordered_map <int, Truba> ::iterator n;
+	//unordered_set <int> ver;
+	//int idout;
+	//int idin;
+	//cout << "Truba ID, which connected KSs";
+	//int id = GetCorrectNumber(1000);
+	//nom = pipe.find(id);
+	//if (nom == pipe.end())
+	//	cout << "Truba with this ID is not found";
+	//else
+	//{
+	//	cout << "Truba out (KS ID)";
+	//	idout=GetIDKS(kss);
+	//	cout << "Truba in (KS ID)";
+	//	idin=GetIDKS(kss);
+	//	nom->second.Truba_in_out(idout, idin);
+	//	ver.insert(idout);
+	//	ver.insert(idin);
+	//}
+//	return ver;
+//}
 
 
 int main()
 {
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
+	unordered_set <int> ver;
 	int i;
 	while (1) {
 		cout << "Select action:" << endl;
@@ -357,10 +359,29 @@ int main()
 		}
 		case 18:
 		{
-			unordered_set <int> verh;
-			verh=ver(pipe, kss);
-			//unordered_set <int> ::iterator it;
-			copy(verh.begin(), verh.end(), ostream_iterator<int>(cout, " "));
+			unordered_map <int, Truba> ::iterator nom;
+			//unordered_map <int, Truba> ::iterator n;
+
+			int idout;
+			int idin;
+			cout << "Truba ID, which connected KSs";
+			int id = GetCorrectNumber(1000);
+			nom = pipe.find(id);
+			if (nom == pipe.end())
+				cout << "Truba with this ID is not found";
+			else
+			{
+				cout << "Truba out (KS ID)";
+				idout = GetIDKS(kss);
+				cout << "Truba in (KS ID)";
+				idin = GetIDKS(kss);
+				nom->second.Truba_in_out(idout, idin);
+				ver.insert(idout);
+				ver.insert(idin);
+			}
+			/*unordered_set <int> verh;
+			verh=ver(pipe, kss);*/
+			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
 			break;
 		}
 		case 0:
