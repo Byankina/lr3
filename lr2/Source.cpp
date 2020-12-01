@@ -3,10 +3,12 @@
 #include <fstream>
 #include <unordered_map>
 #include <vector>
-#include <set>
+#include <unordered_set>
+#include<iterator>
 #include "Truba.h"
 #include "Utils.h"
 #include "KS.h"
+
 using namespace std;
 
 template<typename T>
@@ -101,9 +103,44 @@ void PrintMenu() {
 	<< "15. Find KS by name" << endl
 	<< "16. Find KS by % kol ceh not in work" << endl
 	<< "17. Edit pipe" << endl
+	<< "18. Create Graf"<<endl
 	<< "0. Exit" << endl;
 }
-
+int GetIDKS(const unordered_map<int, KS>& kss)
+{
+	unordered_map <int, KS> ::iterator id;
+	int i;
+	while ((cin >> i).fail()||(kss.find(i)==kss.end(i)))
+	{
+		cin.clear();
+		cin.ignore(10000, '\n');
+		cout << "KS with this ID is not found";
+	}
+	return i;
+}
+unordered_set <int> ver(unordered_map<int, Truba> pipe, unordered_map<int, KS>kss)
+{
+	unordered_map <int, Truba> ::iterator nom;
+	unordered_set <int> ver;
+	int idout;
+	int idin;
+	cout << "Truba ID, which connected KSs";
+	int id = GetCorrectNumber(1000);
+	nom = pipe.find(id);
+	if (nom == pipe.end())
+		cout << "Truba with this ID is not found";
+	else
+	{
+		cout << "Truba out (KS ID)";
+		idout=GetIDKS(kss);
+		cout << "Truba in (KS ID)";
+		idin=GetIDKS(kss);
+		Truba(idout, idin);
+		ver.insert(idout);
+		ver.insert(idin);
+	}
+	return ver;
+}
 
 
 int main()
@@ -114,7 +151,7 @@ int main()
 	while (1) {
 		cout << "Select action:" << endl;
 		PrintMenu();
-		i = GetCorrectNumber(17);
+		i = GetCorrectNumber(18);
 		switch (i)
 		{
 		case 1:
@@ -316,6 +353,14 @@ int main()
 			pipe[i].Edit_pipe();
 		}
 		cout << "Done";
+			break;
+		}
+		case 18:
+		{
+			unordered_set <int> verh;
+			verh=ver(pipe, kss);
+			//unordered_set <int> ::iterator it;
+			copy(verh.begin(), verh.end(), ostream_iterator<int>(cout, " "));
 			break;
 		}
 		case 0:
