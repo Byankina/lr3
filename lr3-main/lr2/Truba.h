@@ -13,6 +13,8 @@ public:
 	int idin;
 	int idout;
 	int get_id() const;
+	int get_idin() const;
+	int get_idout() const;
 	int get_dlina() const;
 	int get_diameter() const;
 	double l;

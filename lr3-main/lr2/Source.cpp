@@ -144,22 +144,24 @@ int main()
 		}
 		case 3:
 		{	
+			if (pipe.size() != 0)
 			for (auto it = pipe.begin(); it != pipe.end(); ++it)
 			{
 				cout << it->second << endl;
 	
 			}
-			if (pipe.size() == 0)
+			else
 				cout << "Have not pipes";
 			break;
 		}
 		case 4:
 		{
+			if (kss.size() != 0)
 			for (auto it = kss.begin(); it != kss.end(); ++it)
 			{
 				cout  << (*it).second << endl;
 			}
-			if (kss.size() == 0)
+			else
 				cout << "Have not KSs";
 			break;
 		}
@@ -195,6 +197,7 @@ int main()
 		{	LoadData(pipe, kss);
 			Truba::MaxID = FindMaxID(pipe);
 			KS::MaxID = FindMaxID(kss);
+			CreateGrafFromFile(pipe,ver);
 			break;
 		}
 		case 9:
@@ -290,7 +293,12 @@ int main()
 				ver.insert(idout);
 				ver.insert(idin);
 			}
+			cout << "KSs ID in Graf: ";
 			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
+			break;
+		}
+		case 17:
+		{
 
 			break;
 		}

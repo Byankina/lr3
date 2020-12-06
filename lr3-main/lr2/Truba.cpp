@@ -72,14 +72,23 @@ int Truba::get_id() const
 }
 int Truba::get_diameter() const
 {
-	int d_znach = d;
+	double d_znach = d;
 	return d_znach;
 }
 int Truba::get_dlina() const
 {
-	int l_znach = l;
+	double l_znach = l;
 	return l_znach;
 }
-
+int Truba::get_idin() const
+{
+	int idin_znach = idin;
+	return idin_znach;
+}
+int Truba::get_idout() const
+{
+	int idout_znach = idout;
+	return idout_znach;
+}
 
 
