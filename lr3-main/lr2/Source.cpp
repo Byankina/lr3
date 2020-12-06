@@ -24,6 +24,14 @@ bool CheckByRemont(const Truba& t,bool param)
 {
 	return t.remont == param;
 }
+bool CheckByIDIN(const Truba& t, int param)
+{
+	return t.idin == param;
+}
+bool CheckByIDOUT(const Truba& t, int param)
+{
+	return t.idout == param;
+}
 bool CheckByName(const KS& k, string param)
 {
 	return k.Name == param;
@@ -60,7 +68,7 @@ vector <int> FindKSByFilter(const unordered_map<int,KS>& kss, FilterKS<T> f, T p
 	return resks;
 }
 
-void del(unordered_map <int, Truba>& pipe)
+void delPipe(unordered_map <int, Truba>& pipe)
 {
 	unordered_map <int, Truba> ::iterator nom;
 	cout << endl << "ID Pipe to delite: " << endl;
@@ -72,7 +80,7 @@ void del(unordered_map <int, Truba>& pipe)
 		del(pipe, id);
 }
 
-void delks(unordered_map <int, KS>& kss)
+void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int> ver)
 {
 	unordered_map <int, KS> ::iterator nom;
 	cout << endl << "ID KS to delite: " << endl;
@@ -82,6 +90,15 @@ void delks(unordered_map <int, KS>& kss)
 		cout << "KS with this ID is not found";
 	else
 		del(kss, id);
+	for (int& i : FindPipeByFilter<int>(pipe, CheckByIDIN, id))
+	{
+		pipe.erase(i);
+	}
+	for (int& i : FindPipeByFilter<int>(pipe, CheckByIDOUT, id))
+	{
+		pipe.erase(i);
+	}
+	ver.erase(id);
 }
 
 void PrintMenu() {
@@ -94,8 +111,6 @@ void PrintMenu() {
 	<< "6. Change the KS" << endl
 	<< "7. Save the data" << endl
 	<< "8. Load from file the data" << endl
-	<< "9. Load from file the pipe" << endl
-	<< "10. Load from file the KS" << endl
 	<< "9. Delete pipe" << endl
 	<< "10. Delete KS" << endl
 	<< "11. Find pipe by diametr" << endl
@@ -104,6 +119,7 @@ void PrintMenu() {
 	<< "14. Find KS by % kol ceh not in work" << endl
 	<< "15. Edit pipe" << endl
 	<< "16. Create Graf"<<endl
+	<< "17. Topologicheskaya sortirovka" << endl
 	<< "0. Exit" << endl;
 }
 int GetIDKS(const unordered_map<int, KS>& kss)
@@ -201,12 +217,13 @@ int main()
 			break;
 		}
 		case 9:
-		{ del(pipe);
+		{ delPipe(pipe);
 		break;
 		}
 		case 10:
-		{delks(kss);
-		break;}
+		{delks(kss,pipe,ver);
+		break;
+		}
 		case 11:
 		{	double param;
 			cout << "Filter diametr > ";
@@ -299,7 +316,7 @@ int main()
 		}
 		case 17:
 		{
-
+			
 			break;
 		}
 		case 0:
