@@ -1,5 +1,6 @@
 #include "KS.h"
 #include "Utils.h"
+#include<fstream>
 using namespace std;
 
 istream& operator >> (istream& in, KS& new_ks)
@@ -58,7 +59,7 @@ KS::KS()
 	this->effect = GetCorrectNumber(10.0);
 }
 
-KS::KS(std::ifstream& fin)
+KS::KS(std::fstream& fin)
 {
 	fin >> this->id >> this->Name >> this->kol_ceh >> this->kol_ceh_inwork >> this->effect;
 }

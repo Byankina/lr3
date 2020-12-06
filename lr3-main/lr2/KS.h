@@ -17,6 +17,6 @@ public:
 	double effect;
 	void Edit_KS();
 	KS();
-	KS(std::ifstream& fin);
+	KS(std::fstream& fin);
 };
 

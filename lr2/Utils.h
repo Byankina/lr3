@@ -1,8 +1,7 @@
 #pragma once
 #include<iostream>
 #include<unordered_map>
-#include "KS.h"
-//#include<unordered_set>
+
 using namespace std;
 //проверка
 template <typename T>
@@ -29,21 +28,7 @@ int FindMaxID(const unordered_map<int, T>& t)
 {
 	int MaxID = -100;
 	for (const auto& i : t)
-		if (i.second.set_id() > MaxID)
-			MaxID = i.second.set_id();
+		if (i.second.get_id() > MaxID)
+			MaxID = i.second.get_id();
 	return MaxID;
 }
-//template <typename T>
-//int GetIDKS(const unordered_map<int, T>& kss,)
-//{
-//	//unordered_map <int, T>::iterator id;
-//	//unordered_map <int, KS> ::iterator id;
-//	int i;
-//	while ((cin >> i)&&(id == kss.end()))
-//	{
-//		cin.clear();
-//		cin.ignore(10000, '\n');
-//		cout << "KS with this ID is not found";
-//	}
-//	return i;
-//}

@@ -3,9 +3,12 @@
 #include <fstream>
 #include <unordered_map>
 #include <vector>
+#include <unordered_set>
+#include<iterator>
 #include "Truba.h"
 #include "Utils.h"
-#include"KS.h"
+#include "KS.h"
+
 using namespace std;
 
 template<typename T>
@@ -57,38 +60,16 @@ vector <int> FindKSByFilter(const unordered_map<int,KS>& kss, FilterKS<T> f, T p
 	return resks;
 }
 
-void PrintMenu() {
-	cout << endl;
-	cout << "1. Add pipe" << endl
-	<< "2. Add KS" << endl
-	<< "3. Show the pipe" << endl
-	<< "4. Show the KS" << endl
-	<< "5. Change the pipe(remont/ne remont)" << endl
-	<< "6. Change the KS" << endl
-	<< "7. Save the pipe" << endl
-	<< "8. Save the KS" << endl
-	<< "9. Load from file the pipe" << endl
-	<< "10. Load from file the KS" << endl
-	<< "11. Delete pipe" << endl
-	<< "12. Delete KS" << endl
-	<< "13. Find pipe by diametr" << endl
-	<< "14. Find pipe in work" << endl
-	<< "15. Find KS by name" << endl
-	<< "16. Find KS by % kol ceh not in work" << endl
-	<< "17. Edit pipe" << endl
-	<< "0. Exit" << endl;
-}
-
-void del(unordered_map <int,Truba>& pipe)
+void del(unordered_map <int, Truba>& pipe)
 {
 	unordered_map <int, Truba> ::iterator nom;
-	cout <<endl<< "ID Pipe to delite: " << endl;
-		int id = GetCorrectNumber(Truba::MaxID);
-		nom = pipe.find(id);
-		if (nom == pipe.end())
-			cout << "Truba with this ID is not found";
-		else
-			del(pipe,id);
+	cout << endl << "ID Pipe to delite: " << endl;
+	int id = GetCorrectNumber(Truba::MaxID);
+	nom = pipe.find(id);
+	if (nom == pipe.end())
+		cout << "Truba with this ID is not found";
+	else
+		del(pipe, id);
 }
 
 void delks(unordered_map <int, KS>& kss)
@@ -100,18 +81,55 @@ void delks(unordered_map <int, KS>& kss)
 	if (nom == kss.end())
 		cout << "KS with this ID is not found";
 	else
-		del(kss,id);
+		del(kss, id);
 }
+
+void PrintMenu() {
+	cout << endl;
+	cout << "1. Add pipe" << endl
+	<< "2. Add KS" << endl
+	<< "3. Show the pipe" << endl
+	<< "4. Show the KS" << endl
+	<< "5. Change the pipe(remont/ne remont)" << endl
+	<< "6. Change the KS" << endl
+	<< "7. Save the data" << endl
+	<< "8. Load from file the data" << endl
+	<< "9. Load from file the pipe" << endl
+	<< "10. Load from file the KS" << endl
+	<< "9. Delete pipe" << endl
+	<< "10. Delete KS" << endl
+	<< "11. Find pipe by diametr" << endl
+	<< "12. Find pipe in work" << endl
+	<< "13. Find KS by name" << endl
+	<< "14. Find KS by % kol ceh not in work" << endl
+	<< "15. Edit pipe" << endl
+	<< "16. Create Graf"<<endl
+	<< "0. Exit" << endl;
+}
+int GetIDKS(const unordered_map<int, KS>& kss)
+{
+	unordered_map <int, KS> ::iterator id;
+	int i;
+	while ((cin >> i).fail()||(kss.find(i)==kss.end()))
+	{
+		cin.clear();
+		cin.ignore(10000, '\n');
+		cout << "KS with this ID is not found. Return: ";
+	}
+	return i;
+}
+
 
 int main()
 {
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
+	unordered_set <int> ver;
 	int i;
 	while (1) {
 		cout << "Select action:" << endl;
 		PrintMenu();
-		i = GetCorrectNumber(17);
+		i = GetCorrectNumber(18);
 		switch (i)
 		{
 		case 1:
@@ -169,89 +187,24 @@ int main()
 			break;
 		}
 		case 7:
-		{	
-			fstream fout;
-			string filename;
-			cout << "Filename: ";
-			cin >> filename;
-			fout.open(filename+".txt", fstream::out);
-			if (fout.is_open()) {
-				cout << "Obrabotka.....";
-				for (auto it = pipe.begin(); it != pipe.end(); ++it)
-				{
-					fout << it->second << endl;
-				}
-				fout.close();
-				cout << "Pipe saved";
-			}
+		{	if (pipe.size()!=0 || kss.size()!=0)
+			SaveData(pipe,kss);
 			break;
 		}
 		case 8:
-		{
-			fstream fout;
-			string filename;
-			cout << "Filename: ";
-			cin >> filename;
-			fout.open(filename+".txt", ios::out);
-			if (fout.is_open()) {
-				cout << "Obrabotka.....";
-				for (auto it = kss.begin(); it != kss.end(); ++it)
-				{
-					fout<< (*it).second << endl;
-				}
-				fout.close();
-				cout << "KS saved";
-			}
+		{	LoadData(pipe, kss);
+			Truba::MaxID = FindMaxID(pipe);
+			KS::MaxID = FindMaxID(kss);
 			break;
 		}
 		case 9:
-		{		
-			fstream fin;
-			unordered_map<int, Truba> pipe2;
-			string filename;
-			cout << "Filename: ";
-			cin >> filename;
-			fin.open(filename+".txt", fstream::in);
-			if (fin.is_open()) {
-			while (!fin.eof())
-			{
-				Truba p(fin);
-				pipe2.insert(pair<int, Truba>(p.get_id(), p));
-			}
-			fin.close();
-			pipe = pipe2;
-			Truba::MaxID = FindMaxID(pipe);
-		}
-		break;
-		}
-		case 10:
-		{
-			ifstream fin;
-			unordered_map<int, KS> kss2;
-			string filename;
-			cout << "Filename: ";
-			cin >> filename;
-			fin.open(filename+".txt", ifstream::in);
-			if (fin.is_open()) {
-				while (!fin.eof())
-				{
-					KS k(fin);
-					kss2.insert(pair<int, KS>(k.get_id(), k));
-				}
-				fin.close();
-				kss = kss2;
-				KS::MaxID = FindMaxID(kss);
-			}
-			break;
-		}
-		case 11:
 		{ del(pipe);
 		break;
 		}
-		case 12:
+		case 10:
 		{delks(kss);
 		break;}
-		case 13:
+		case 11:
 		{	double param;
 			cout << "Filter diametr > ";
 			cin >> param;
@@ -265,7 +218,7 @@ int main()
 			}
 			break;
 		}
-		case 14:
+		case 12:
 		{
 			if (pipe.size() != 0)
 			{
@@ -278,7 +231,7 @@ int main()
 			};
 		break;
 		}
-		case 15:
+		case 13:
 		{
 			string name;
 			cout << "Filter Name:  ";
@@ -292,7 +245,7 @@ int main()
 				cout << "Have not KSs"<<endl;
 			break;
 			}
-		case 16:
+		case 14:
 		{	double param;
 			cout << "Filter % not in work > ";
 			param = GetCorrectNumber(100.0);
@@ -305,7 +258,7 @@ int main()
 				cout << "Have not KSs" << endl;
 		break;
 		}
-		case 17:
+		case 15:
 		{
 				double d;
 		cout << "Edit pipe d>";
@@ -315,6 +268,30 @@ int main()
 			pipe[i].Edit_pipe();
 		}
 		cout << "Done";
+			break;
+		}
+		case 16:
+		{
+			unordered_map <int, Truba> ::iterator nom;
+			int idout;
+			int idin;
+			cout << "Truba ID, which connected KSs: ";
+			int id = GetCorrectNumber(Truba::MaxID);
+			nom = pipe.find(id);
+			if (nom == pipe.end())
+				cout << "Truba with this ID is not found";
+			else
+			{
+				cout << "Truba out (KS ID): ";
+				idout = GetIDKS(kss);
+				cout << "Truba in (KS ID): ";
+				idin = GetIDKS(kss);
+				nom->second.Truba_in_out(idout, idin);
+				ver.insert(idout);
+				ver.insert(idin);
+			}
+			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
+
 			break;
 		}
 		case 0:
