@@ -99,6 +99,7 @@ void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unord
 	}
 	ver.erase(id);
 }
+
 int GetIDKS(const unordered_map<int, KS>& kss)
 {
 	unordered_map <int, KS> ::iterator id;
@@ -111,11 +112,13 @@ int GetIDKS(const unordered_map<int, KS>& kss)
 	}
 	return i;
 }
+
 struct id_in_pipe
 {
 	int id;
 	int idin;
 };
+
 id_in_pipe createStruct(int& id, int& idin)
 {
 	id_in_pipe new_pair;
@@ -124,54 +127,56 @@ id_in_pipe createStruct(int& id, int& idin)
 	return new_pair;
 }
 
-
-
-struct Use
-{
-	int id;
-	bool used;
-};
-
-void dfs(int v, unordered_map<int, vector<id_in_pipe>>& g, unordered_map<int, bool>& count, vector<int>& ans) {
-	count[v] = true;
+bool dfspr(int v,unordered_map<int,vector<id_in_pipe>>& g, unordered_map<int,char> cl, unordered_map<int,int> p, int& cycle_st, vector<int>& ans) {
+	cl[v] = 1;
 	vector<id_in_pipe> arr;
 	arr = g[v];
-	for (auto& el : arr) {
-		int to = el.id;
-		if (!count[to])
-			dfs(to, g, count, ans);
-	}
-	ans.push_back(v);
-}
 
-unordered_map<int, bool> countCS(unordered_map<int, vector<id_in_pipe>>& g)
-{
-	unordered_map<int, bool> countArr;
-	for (auto& el : g)
-	{
-		countArr[el.first] = false;
-		for (auto& p1 : el.second)
+	for (auto& i:arr) {
+		int to = i.idin;
+		if (cl[to] == 0) 
 		{
-			countArr[p1.id] = false;
+			p[to] = v;
+			if (dfspr(to, g, cl, p, cycle_st, ans))
+				return true;
 		}
+		else if (cl[to] == 1) 
+		{
+			cycle_st = to;
+			return true;
+		}
+
 	}
-	return countArr;
+	cl[v] = 2;
+	int k = 0;
+	for (int j = 0;j < ans.size();j++)
+		if (ans[j] == v)
+			k = k + 1;	
+	if (k==0) ans.push_back(v);
+	return false;
+
 }
 
 void topologicalSort(unordered_map<int, vector<id_in_pipe>>& g, unordered_map<int, bool>& count, vector<int>& ans) {
-	count = countCS(g);
 	ans.clear();
-	for (auto& el : count)
-		if (!el.second)
-			dfs(el.first, g, count, ans);
-	reverse(ans.begin(), ans.end());
+	unordered_map<int,char> cl;
+	unordered_map<int,int> p;
+	for (auto& i:g)
+	{
+		cl[i.first] = false;
+		p[i.first] = -1;
+	}
+	int cycle_st=-1;
+	for (auto& el : cl)
+	{
+		if (dfspr(el.first, g, cl, p, cycle_st,ans))
+			break;
+	}
+
+	if (cycle_st == -1)
+		reverse(ans.begin(), ans.end());
+	else cout << "Cycle";
 }
-
-
-
-
-
-
 
 void PrintMenu() {
 	cout << endl;
@@ -195,13 +200,11 @@ void PrintMenu() {
 	<< "0. Exit" << endl;
 }
 
-
 int main()
 {
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
 	unordered_set <int> ver;
-	//vector<vector<int>>graph;
 	unordered_map<int, vector<id_in_pipe>> graph;
 
 	int i;
@@ -409,85 +412,6 @@ int main()
 				cout << *index;
 				if (index + 1 != ans.end()) cout << " -> ";
 			}
-			//int n = ver.size();
-			//vector<char> used;
-			//void dfs(int v)
-			//{
-				//used[v] = true;
-				//for (vector<int>::iterator i = g[v].begin(); i != g[v].end(); ++i)
-					//if (!used[*i])
-						//dfs(*i);
-			//}
-			/*vector <int> top;
-			int chet1 = 0;
-			int chet_1 = 0;
-			while ()
-			{
-				unordered_map <int, KS>ks;
-				unordered_map <int, Truba>pi;
-				pi = pipe;
-				ks = kss;
-
-				int N = ks.size();
-				int M = pi.size() + 1;
-				int** mass;
-				mass = new int* [N];
-				for (int i = 0; i < N; i++)
-				{
-					mass[i] = new int[M];
-					for (int j = 0; j < M; j++)
-						mass[i][j] = 0;
-				}
-				int a = 0;
-				for (const auto& i : ks)
-				{
-					mass[a][0] = i.first;
-					int b = 1;
-					for (const auto& j : pi)
-					{
-						if (j.second.get_idin() == i.second.get_id())
-							mass[a][b] = 1;
-						else if (j.second.get_idout() == i.second.get_id())
-							mass[a][b] = -1;
-						b = b + 1;
-					}
-					a = a + 1;
-				}
-				vector<int>idks;
-				vector <int>idksin;
-				int vershina;
-				for (int i = 0; i < N; i++)
-				{
-					int chet1 = 0;
-					int chet_1 = 0;
-					cout << mass[i][0] << " ";
-					for (int j = 1; j < M; j++)
-					{
-						cout << mass[i][j] << " ";
-						if (mass[i][j] == 1)
-							chet1 = chet1 + 1;
-						else if (mass[i][j] == -1)
-							chet_1 = chet_1 + 1;
-					}
-					if ((chet_1 > 0) && (chet1 == 0))
-						idks.push_back(mass[i][0]);
-					else if ((chet_1 = 0) && (chet1 == 0))
-						idks.push_back(mass[i][0]);
-					else
-						if ((chet1 > 0) && (chet_1 == 0))
-							idksin.push_back(1);
-					cout << endl;
-				}
-				if ((idks.size() == 0) || (idksin.size() == 0))
-					cout << "This is a cycle";
-				else
-					for (auto& i : idks)
-						cout << idks[i];*/
-
-
-			//}
-
-
 			break;
 		}
 		case 0:
@@ -496,5 +420,4 @@ int main()
 		}
 		cout << endl;
 	}
-
 }
