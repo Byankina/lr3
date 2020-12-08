@@ -36,7 +36,6 @@ int FindMaxID(const unordered_map<int, T>& t)
 }
 //сохранение данных в файл
 template <typename T,typename K>
-//template <typename K>
 void SaveData(const unordered_map<int, T>& t, const unordered_map<int, K>& k)
 {
 	fstream fout;
@@ -90,18 +89,39 @@ void LoadData(unordered_map<int, T>& t,unordered_map<int, K>& k)
 		k = k2;
 	}
 }
-template <typename T, typename K>
-void CreateGrafFromFile(unordered_map<int, T>& pipe, unordered_set<int, K>& ver)
+//Создание графа
+
+
+template <typename T, typename K,typename F>
+void CreateGrafFromFile(unordered_map<int, T>& pipe, unordered_set<int, K>& ver, unordered_map<int, vector<F>> graph)
 {
 	if (pipe.size() != 0)
 		for (auto it = pipe.begin(); it != pipe.end(); ++it)
 		{
 			if (it->second.get_idin() != 0)
 			{
+				F new_pair;
+				new_pair.id = it->second.get_id();
+				new_pair.idin = it->second.get_idin();
+				graph[it->second.get_idout()].push_back(new_pair);
 				ver.insert(it->second.get_idin());
 				ver.insert(it->second.get_idout());
 			}
 		}
 	cout << "KSs ID in Graf: ";
 	copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
+}
+template <typename T>
+void PrintGraph(T graph)
+{
+	for (auto& i : graph)
+	{
+		cout << "KS ID " << i.first << " connected by Truba ID ";
+		for (auto j = i.second.begin(); j != i.second.end(); j++)
+		{
+			cout << j->id << " wiht KS ID " << j->idin;
+			if (j + 1 != i.second.end()) cout << ", ";
+		}
+		cout << endl;
+	}
 }
