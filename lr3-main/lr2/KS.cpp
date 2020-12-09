@@ -3,32 +3,12 @@
 #include<fstream>
 using namespace std;
 
-istream& operator >> (istream& in, KS& new_ks)
-{
-	cout << "Name: " << endl;
-	cin.ignore(10000, '\n');
-	getline(cin, new_ks.Name);
-	cout << "kol ceh=" << endl;
-	new_ks.kol_ceh = GetCorrectNumber(100);
-	cout << "kol ceh inwork=" << endl;
-	new_ks.kol_ceh_inwork = GetCorrectNumber(new_ks.kol_ceh);
-	cout << "effect=" << endl;
-	new_ks.effect = GetCorrectNumber(10.0);
-	return in;
-}
-
 ostream& operator << (ostream& out, const KS& k)
 {
 	out << "KS" << "    ID: " << k.id 
 	<< "    Name: "<< k.Name<< "    in work "<< k.kol_ceh_inwork 
 		<< "/"<< k.kol_ceh << "    Effect= "<< k.effect;
 	return out;
-}
-
-std::fstream& operator<<(std::fstream& fout, const KS& c)
-{
-	fout << c.id << endl << c.Name << endl << c.kol_ceh << endl << c.kol_ceh_inwork << endl << c.effect;
-	return fout;
 }
 
 std::fstream& operator>>(std::fstream& fin, KS& k)

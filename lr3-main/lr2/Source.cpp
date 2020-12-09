@@ -9,7 +9,7 @@
 #include "Utils.h"
 #include "KS.h"
 using namespace std;
-
+//фильтры
 template<typename T>
 using Filter = bool(*)(const Truba&  t, T param);
 template<typename T>
@@ -66,7 +66,7 @@ vector <int> FindKSByFilter(const unordered_map<int,KS>& kss, FilterKS<T> f, T p
 	}
 	return resks;
 }
-
+//удаление трубы
 void delPipe(unordered_map <int, Truba>& pipe)
 {
 	unordered_map <int, Truba> ::iterator nom;
@@ -78,8 +78,8 @@ void delPipe(unordered_map <int, Truba>& pipe)
 	else
 		del(pipe, id);
 }
-
-void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int> ver)
+//удаление КС с подключенными к ней трубами
+void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int>& ver)
 {
 	unordered_map <int, KS> ::iterator nom;
 	cout << endl << "ID KS to delite: " << endl;
@@ -99,7 +99,7 @@ void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unord
 	}
 	ver.erase(id);
 }
-
+//Получение ID КС
 int GetIDKS(const unordered_map<int, KS>& kss)
 {
 	unordered_map <int, KS> ::iterator id;
@@ -112,13 +112,12 @@ int GetIDKS(const unordered_map<int, KS>& kss)
 	}
 	return i;
 }
-
+//создание структуры для вектора - строки словаря (граф)
 struct id_in_pipe
 {
 	int id;
 	int idin;
 };
-
 id_in_pipe createStruct(int& id, int& idin)
 {
 	id_in_pipe new_pair;
@@ -126,7 +125,7 @@ id_in_pipe createStruct(int& id, int& idin)
 	new_pair.idin = idin;
 	return new_pair;
 }
-
+//топологическая сортировка и проверка на циклы
 bool dfspr(int v,unordered_map<int,vector<id_in_pipe>>& g, unordered_map<int,char> cl, unordered_map<int,int> p, int& cycle_st, vector<int>& ans) {
 	cl[v] = 1;
 	vector<id_in_pipe> arr;
@@ -156,8 +155,7 @@ bool dfspr(int v,unordered_map<int,vector<id_in_pipe>>& g, unordered_map<int,cha
 	return false;
 
 }
-
-void topologicalSort(unordered_map<int, vector<id_in_pipe>>& g, unordered_map<int, bool>& count, vector<int>& ans) {
+void topolog_sort(unordered_map<int, vector<id_in_pipe>>& g, vector<int>& ans) {
 	ans.clear();
 	unordered_map<int,char> cl;
 	unordered_map<int,int> p;
@@ -177,7 +175,29 @@ void topologicalSort(unordered_map<int, vector<id_in_pipe>>& g, unordered_map<in
 		reverse(ans.begin(), ans.end());
 	else cout << "Cycle";
 }
-
+//создание графа по условиям
+unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int>& ver)
+{
+	graph.clear();
+	if (pipe.size() != 0)
+		for (auto it = pipe.begin(); it != pipe.end(); ++it)
+		{
+			if (it->second.get_idin() != 0 && it->second.get_remont()==false)
+			{
+				int id = it->second.get_id();
+				int idin = it->second.get_idin();
+				int idout = it->second.get_idout();
+				ver.insert(it->second.get_idin());
+				ver.insert(it->second.get_idout());
+				graph[idout].push_back(createStruct(id, idin));
+			}
+		}
+	cout << "KSs ID in Graf: ";
+	copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
+	cout << endl;
+	return graph;
+}
+//вывод меню
 void PrintMenu() {
 	cout << endl;
 	cout << "1. Add pipe" << endl
@@ -195,18 +215,18 @@ void PrintMenu() {
 	<< "13. Find KS by name" << endl
 	<< "14. Find KS by % kol ceh not in work" << endl
 	<< "15. Edit pipe" << endl
-	<< "16. Create Graf"<<endl
-	<< "17. Topologicheskaya sortirovka" << endl
+	<< "16. Create Graph"<<endl
+	<< "17. Print Graph" << endl
+	<< "18. Topologicheskaya sortirovka" << endl
 	<< "0. Exit" << endl;
 }
-
+//основная программа
 int main()
 {
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
 	unordered_set <int> ver;
 	unordered_map<int, vector<id_in_pipe>> graph;
-
 	int i;
 	while (1) {
 		cout << "Select action:" << endl;
@@ -261,7 +281,7 @@ int main()
 		case 6:
 		{
 			unordered_map <int, KS> ::iterator nom;
-			cout << "ID Pipe to change: ";
+			cout << "ID KS to change: ";
 			int id = GetCorrectNumber(KS::MaxID);
 			nom = kss.find(id);
 			if (nom == kss.end())
@@ -277,26 +297,9 @@ int main()
 		}
 		case 8:
 		{	LoadData(pipe, kss);
+			
 			Truba::MaxID = FindMaxID(pipe);
 			KS::MaxID = FindMaxID(kss);
-			graph.clear();
-			if (pipe.size() != 0)
-				for (auto it = pipe.begin(); it != pipe.end(); ++it)
-				{
-					if (it->second.get_idin() != 0)
-					{
-						int id = it->second.get_id();
-						int idin = it->second.get_idin();
-						int idout = it->second.get_idout();
-						ver.insert(it->second.get_idin());
-						ver.insert(it->second.get_idout());
-						graph[idout].push_back(createStruct(id, idin));
-					}
-				}
-			cout << "KSs ID in Graf: ";
-			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
-			cout << endl;
-			PrintGraph(graph);
 			break;
 		}
 		case 9:
@@ -375,14 +378,15 @@ int main()
 		}
 		case 16:
 		{
+			
 			unordered_map <int, Truba> ::iterator nom;
 			int idout;
 			int idin;
 			cout << "Truba ID, which connected KSs: ";
 			int id = GetCorrectNumber(Truba::MaxID);
 			nom = pipe.find(id);
-			if (nom == pipe.end())
-				cout << "Truba with this ID is not found";
+			if (nom == pipe.end() || (nom->second.get_remont()==true)|| (nom->second.get_idout()!=0))
+				cout << "Truba with this ID is not found or in remont or used\n";
 			else
 			{
 				cout << "Truba out (KS ID): ";
@@ -398,19 +402,24 @@ int main()
 			cout << "KSs ID in Graf: ";
 			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
 			cout << endl;
-			PrintGraph(graph);
-
 			break;
 		}
 		case 17:
+		{	
+			graph = Graph(graph, kss, pipe, ver);
+			PrintGraph(graph);
+		break;
+		}
+		case 18:
 		{
-			unordered_map<int, bool> count;
+			graph = Graph(graph, kss, pipe, ver);
+			PrintGraph(graph);
 			vector<int> ans;
-			topologicalSort(graph, count, ans);
+			topolog_sort(graph, ans);
 			for (auto index = ans.begin(); index != ans.end(); index++)
 			{
 				cout << *index;
-				if (index + 1 != ans.end()) cout << " -> ";
+				if (index + 1 != ans.end()) cout << " > ";
 			}
 			break;
 		}
