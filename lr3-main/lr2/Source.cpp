@@ -79,7 +79,7 @@ void delPipe(unordered_map <int, Truba>& pipe)
 		del(pipe, id);
 }
 //удаление КС с подключенными к ней трубами
-void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int>& ver)
+void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe)
 {
 	unordered_map <int, KS> ::iterator nom;
 	cout << endl << "ID KS to delite: " << endl;
@@ -97,7 +97,6 @@ void delks(unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unord
 	{
 		pipe.erase(i);
 	}
-	ver.erase(id);
 }
 //Получение ID КС
 int GetIDKS(const unordered_map<int, KS>& kss)
@@ -148,7 +147,8 @@ bool dfspr(int v,unordered_map<int,vector<id_in_pipe>>& g, unordered_map<int,cha
 	}
 	cl[v] = 2;
 	int k = 0;
-	for (int j = 0;j < ans.size();j++)
+	int n = ans.size();
+	for (int j = 0;j < n;j++)
 		if (ans[j] == v)
 			k = k + 1;	
 	if (k==0) ans.push_back(v);
@@ -176,7 +176,7 @@ void topolog_sort(unordered_map<int, vector<id_in_pipe>>& g, vector<int>& ans) {
 	else cout << "Cycle";
 }
 //создание графа по условиям
-unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set <int>& ver)
+unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe)
 {
 	graph.clear();
 	if (pipe.size() != 0)
@@ -187,14 +187,9 @@ unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pip
 				int id = it->second.get_id();
 				int idin = it->second.get_idin();
 				int idout = it->second.get_idout();
-				ver.insert(it->second.get_idin());
-				ver.insert(it->second.get_idout());
 				graph[idout].push_back(createStruct(id, idin));
 			}
 		}
-	cout << "KSs ID in Graf: ";
-	copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
-	cout << endl;
 	return graph;
 }
 //вывод меню
@@ -225,7 +220,6 @@ int main()
 {
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
-	unordered_set <int> ver;
 	unordered_map<int, vector<id_in_pipe>> graph;
 	int i;
 	while (1) {
@@ -307,7 +301,7 @@ int main()
 		break;
 		}
 		case 10:
-		{delks(kss,pipe,ver);
+		{delks(kss,pipe);
 		break;
 		}
 		case 11:
@@ -385,8 +379,8 @@ int main()
 			cout << "Truba ID, which connected KSs: ";
 			int id = GetCorrectNumber(Truba::MaxID);
 			nom = pipe.find(id);
-			if (nom == pipe.end() || (nom->second.get_remont()==true)|| (nom->second.get_idout()!=0))
-				cout << "Truba with this ID is not found or in remont or used\n";
+			if (nom == pipe.end() || (nom->second.get_idout()!=0))
+				cout << "Truba with this ID is not found or used\n";
 			else
 			{
 				cout << "Truba out (KS ID): ";
@@ -394,25 +388,18 @@ int main()
 				cout << "Truba in (KS ID): ";
 				idin = GetIDKS(kss);
 				nom->second.Truba_in_out(idout, idin);
-				ver.insert(idout);
-				ver.insert(idin);
-				
-				graph[idout].push_back(createStruct(id, idin));
 			}
-			cout << "KSs ID in Graf: ";
-			copy(ver.begin(), ver.end(), ostream_iterator<int>(cout, " "));
-			cout << endl;
 			break;
 		}
 		case 17:
 		{	
-			graph = Graph(graph, kss, pipe, ver);
+			graph = Graph(graph, kss, pipe);
 			PrintGraph(graph);
 		break;
 		}
 		case 18:
 		{
-			graph = Graph(graph, kss, pipe, ver);
+			graph = Graph(graph, kss, pipe);
 			PrintGraph(graph);
 			vector<int> ans;
 			topolog_sort(graph, ans);
