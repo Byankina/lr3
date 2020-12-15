@@ -19,7 +19,7 @@ bool CheckByDiametr(const  Truba&  t, double param)
 }
 bool CheckByRemont(const Truba& t,bool param)
 {
-	return t.remont == param;
+	return t.get_remont() == param;
 }
 bool CheckByName(const KS& k, string param)
 {
@@ -28,7 +28,7 @@ bool CheckByName(const KS& k, string param)
 bool CheckByProcent(const KS& k, double param)
 {
 	double q;
-	q =100*(k.kol_ceh - k.kol_ceh_inwork) / k.kol_ceh ;
+	q =100*(k.get_kol_ceh() - k.get_kol_ceh_inwork()) / k.get_kol_ceh() ;
 	return (q) > param;
 }
 template<typename T>

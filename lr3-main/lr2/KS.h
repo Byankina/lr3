@@ -3,18 +3,21 @@
 #include<string>
 #include <fstream>
 class KS
-{	//friend std::istream& operator >> (std::istream& in, KS& new_ks);
+{
 	friend std::ostream& operator << (std::ostream& out, const KS& k);
-	//friend std::fstream& operator << (std::fstream& out, const KS& k);
 	friend std::fstream& operator >> (std::fstream& in, KS& k);
 	int id;
-public:
-	int get_id() const;
-	static int MaxID;
-	std::string Name;
 	int kol_ceh;
 	int kol_ceh_inwork;
 	double effect;
+public:
+	int get_id() const;
+	int get_kol_ceh() const;
+	int get_kol_ceh_inwork() const;
+	double get_effect() const;
+	static int MaxID;
+	std::string Name;
+
 	void Edit_KS();
 	KS();
 	KS(std::fstream& fin);

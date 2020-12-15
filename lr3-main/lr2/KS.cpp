@@ -49,3 +49,18 @@ int KS::get_id() const
 	int id_znach = id;
 	return id_znach;
 }
+int KS::get_kol_ceh() const
+{
+	int kol_ceh_znach = kol_ceh;
+	return kol_ceh_znach;
+}
+int KS::get_kol_ceh_inwork() const
+{
+	int kol_ceh_inwork_znach = kol_ceh_inwork;
+	return kol_ceh_inwork_znach;
+}
+double KS::get_effect() const
+{
+	double effect_znach = effect;
+	return effect_znach;
+}

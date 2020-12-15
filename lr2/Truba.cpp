@@ -72,3 +72,7 @@ int Truba::get_dlina() const
 }
 
 
+bool Truba::get_remont() const
+{
+	return remont;
+}

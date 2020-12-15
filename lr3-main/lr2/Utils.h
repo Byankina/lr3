@@ -5,6 +5,9 @@
 #include<unordered_set>
 #include "KS.h"
 using namespace std;
+
+
+
 //проверка
 template <typename T>
 T GetCorrectNumber(T max)
@@ -87,20 +90,5 @@ void LoadData(unordered_map<int, T>& t,unordered_map<int, K>& k)
 		fin.close();
 		t=t2;
 		k = k2;
-	}
-}
-//вывод графа на консоль
-template <typename T>
-void PrintGraph(T graph)
-{
-	for (auto& i : graph)
-	{
-		cout << "KS ID " << i.first << " connected by Truba ID ";
-		for (auto j = i.second.begin(); j != i.second.end(); j++)
-		{
-			cout << j->id << " wiht KS ID " << j->idin;
-			if (j + 1 != i.second.end()) cout << ", ";
-		}
-		cout << endl;
 	}
 }

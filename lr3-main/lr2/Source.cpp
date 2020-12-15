@@ -8,6 +8,7 @@
 #include "Truba.h"
 #include "Utils.h"
 #include "KS.h"
+#include"Work_with_graph.h"
 using namespace std;
 //фильтры
 template<typename T>
@@ -21,15 +22,15 @@ bool CheckByDiametr(const  Truba&  t, double param)
 }
 bool CheckByRemont(const Truba& t,bool param)
 {
-	return t.remont == param;
+	return t.get_remont() == param;
 }
 bool CheckByIDIN(const Truba& t, int param)
 {
-	return t.idin == param;
+	return t.get_idin() == param;
 }
 bool CheckByIDOUT(const Truba& t, int param)
 {
-	return t.idout == param;
+	return t.get_idout() == param;
 }
 bool CheckByName(const KS& k, string param)
 {
@@ -38,7 +39,7 @@ bool CheckByName(const KS& k, string param)
 bool CheckByProcent(const KS& k, double param)
 {
 	double q;
-	q =100*(k.kol_ceh - k.kol_ceh_inwork) / k.kol_ceh ;
+	q =100*(k.get_kol_ceh() - k.get_kol_ceh_inwork()) / k.get_kol_ceh() ;
 	return (q) > param;
 }
 template<typename T>
@@ -111,110 +112,30 @@ int GetIDKS(const unordered_map<int, KS>& kss)
 	}
 	return i;
 }
-//создание структуры для вектора - строки словаря (граф)
-struct id_in_pipe
-{
-	int id;
-	int idin;
-};
-id_in_pipe createStruct(int& id, int& idin)
-{
-	id_in_pipe new_pair;
-	new_pair.id = id;
-	new_pair.idin = idin;
-	return new_pair;
-}
-//топологическая сортировка и проверка на циклы
-bool dfspr(int v,unordered_map<int,vector<id_in_pipe>>& g, unordered_map<int,char> cl, unordered_map<int,int> p, int& cycle_st, vector<int>& ans) {
-	cl[v] = 1;
-	vector<id_in_pipe> arr;
-	arr = g[v];
-
-	for (auto& i:arr) {
-		int to = i.idin;
-		if (cl[to] == 0) 
-		{
-			p[to] = v;
-			if (dfspr(to, g, cl, p, cycle_st, ans))
-				return true;
-		}
-		else if (cl[to] == 1) 
-		{
-			cycle_st = to;
-			return true;
-		}
-
-	}
-	cl[v] = 2;
-	int k = 0;
-	int n = ans.size();
-	for (int j = 0;j < n;j++)
-		if (ans[j] == v)
-			k = k + 1;	
-	if (k==0) ans.push_back(v);
-	return false;
-
-}
-void topolog_sort(unordered_map<int, vector<id_in_pipe>>& g, vector<int>& ans) {
-	ans.clear();
-	unordered_map<int,char> cl;
-	unordered_map<int,int> p;
-	for (auto& i:g)
-	{
-		cl[i.first] = false;
-		p[i.first] = -1;
-	}
-	int cycle_st=-1;
-	for (auto& el : cl)
-	{
-		if (dfspr(el.first, g, cl, p, cycle_st,ans))
-			break;
-	}
-
-	if (cycle_st == -1)
-		reverse(ans.begin(), ans.end());
-	else cout << "Cycle";
-}
-//создание графа по условиям
-unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe)
-{
-	graph.clear();
-	if (pipe.size() != 0)
-		for (auto it = pipe.begin(); it != pipe.end(); ++it)
-		{
-			if (it->second.get_idin() != 0 && it->second.get_remont()==false)
-			{
-				int id = it->second.get_id();
-				int idin = it->second.get_idin();
-				int idout = it->second.get_idout();
-				graph[idout].push_back(createStruct(id, idin));
-			}
-		}
-	return graph;
-}
 //вывод меню
 void PrintMenu() {
 	cout << endl;
 	cout << "1. Add pipe" << endl
-	<< "2. Add KS" << endl
-	<< "3. Show the pipe" << endl
-	<< "4. Show the KS" << endl
-	<< "5. Change the pipe(remont/ne remont)" << endl
-	<< "6. Change the KS" << endl
-	<< "7. Save the data" << endl
-	<< "8. Load from file the data" << endl
-	<< "9. Delete pipe" << endl
-	<< "10. Delete KS" << endl
-	<< "11. Find pipe by diametr" << endl
-	<< "12. Find pipe in work" << endl
-	<< "13. Find KS by name" << endl
-	<< "14. Find KS by % kol ceh not in work" << endl
-	<< "15. Edit pipe" << endl
-	<< "16. Create Graph"<<endl
-	<< "17. Print Graph" << endl
-	<< "18. Topologicheskaya sortirovka" << endl
-	<< "0. Exit" << endl;
+		<< "2. Add KS" << endl
+		<< "3. Show the pipe" << endl
+		<< "4. Show the KS" << endl
+		<< "5. Change the pipe(remont/ne remont)" << endl
+		<< "6. Change the KS" << endl
+		<< "7. Save the data" << endl
+		<< "8. Load from file the data" << endl
+		<< "9. Delete pipe" << endl
+		<< "10. Delete KS" << endl
+		<< "11. Find pipe by diametr" << endl
+		<< "12. Find pipe in work" << endl
+		<< "13. Find KS by name" << endl
+		<< "14. Find KS by % kol ceh not in work" << endl
+		<< "15. Edit pipe" << endl
+		<< "16. Create Graph" << endl
+		<< "17. Print Graph" << endl
+		<< "18. Topologicheskaya sortirovka" << endl
+		<< "0. Exit" << endl;
 }
+
 //основная программа
 int main()
 {
@@ -225,7 +146,7 @@ int main()
 	while (1) {
 		cout << "Select action:" << endl;
 		PrintMenu();
-		i = GetCorrectNumber(18);
+		i = GetCorrectNumber(19);
 		switch (i)
 		{
 		case 1:
@@ -262,14 +183,15 @@ int main()
 			break;
 		}
 		case 5:
-		{unordered_map <int, Truba> ::iterator nom;
-		cout << "ID Pipe to change: ";
-		int id = GetCorrectNumber(Truba::MaxID);
-		nom = pipe.find(id);
-		if (nom == pipe.end())
-			cout << "Truba with this ID is not found";
-		else
-			nom->second.Edit_pipe();
+		{
+			unordered_map <int, Truba> ::iterator nom;
+			cout << "ID Pipe to change: ";
+			int id = GetCorrectNumber(Truba::MaxID);
+			nom = pipe.find(id);
+			if (nom == pipe.end())
+				cout << "Truba with this ID is not found";
+			else
+				nom->second.Edit_pipe();
 			break;
 		}
 		case 6:
@@ -360,14 +282,22 @@ int main()
 		}
 		case 15:
 		{
-				double d;
-		cout << "Edit pipe d>";
-		d= GetCorrectNumber(2000.0);
-		for (int& i : FindPipeByFilter<double>(pipe, CheckByDiametr, d))
-		{
-			pipe[i].Edit_pipe();
-		}
-		cout << "Done";
+			bool param;
+			cout << "Edit Sostoyznie Truby(0/1): ";
+			param = GetCorrectNumber(1);
+			for (int& i : FindPipeByFilter<bool>(pipe, CheckByRemont, param))
+			{
+				cout << pipe[i] << endl;
+			}
+			cout << "0.Edit all pipe" << endl << "1.Edit some from found" << endl << "Select action: ";
+			int vybor = GetCorrectNumber(1);
+			if (vybor == 0) {
+				for (int& i : FindPipeByFilter<bool>(pipe, CheckByRemont, param))
+					pipe[i].Edit_pipe();
+				cout << "Done";
+			}
+			else cout << "Select p.5" << endl;
+
 			break;
 		}
 		case 16:
@@ -408,6 +338,11 @@ int main()
 				cout << *index;
 				if (index + 1 != ans.end()) cout << " > ";
 			}
+			break;
+		}
+		case 19:
+		{
+			
 			break;
 		}
 		case 0:
