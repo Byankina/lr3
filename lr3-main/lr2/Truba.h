@@ -12,6 +12,7 @@ class Truba
 	bool remont;
 	int idin;
 	int idout;
+	int propusk;
 public:
 
 	int get_id() const;
@@ -20,7 +21,7 @@ public:
 	double get_dlina() const;
 	double get_diameter() const;
 	bool get_remont() const;
-
+	int get_propusk() const;
     void Edit_pipe();
 	Truba();
 	Truba(std::fstream& fin);

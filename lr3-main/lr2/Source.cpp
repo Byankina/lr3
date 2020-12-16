@@ -142,6 +142,7 @@ int main()
 	unordered_map<int, Truba> pipe;
 	unordered_map<int, KS>kss;
 	unordered_map<int, vector<id_in_pipe>> graph;
+	unordered_set<int>idks;
 	int i;
 	while (1) {
 		cout << "Select action:" << endl;
@@ -151,22 +152,22 @@ int main()
 		{
 		case 1:
 		{
-			pipe.insert(pair<int, Truba>(Truba::MaxID,Truba()));
+			pipe.insert(pair<int, Truba>(Truba::MaxID, Truba()));
 			break;
 		}
 		case 2:
-		{	
+		{
 			kss.insert(pair<int, KS>(KS::MaxID, KS()));
 			break;
 		}
 		case 3:
-		{	
+		{
 			if (pipe.size() != 0)
-			for (auto it = pipe.begin(); it != pipe.end(); ++it)
-			{
-				cout << it->second << endl;
-	
-			}
+				for (auto it = pipe.begin(); it != pipe.end(); ++it)
+				{
+					cout << it->second << endl;
+
+				}
 			else
 				cout << "Have not pipes";
 			break;
@@ -174,10 +175,10 @@ int main()
 		case 4:
 		{
 			if (kss.size() != 0)
-			for (auto it = kss.begin(); it != kss.end(); ++it)
-			{
-				cout  << (*it).second << endl;
-			}
+				for (auto it = kss.begin(); it != kss.end(); ++it)
+				{
+					cout << (*it).second << endl;
+				}
 			else
 				cout << "Have not KSs";
 			break;
@@ -207,38 +208,39 @@ int main()
 			break;
 		}
 		case 7:
-		{	if (pipe.size()!=0 || kss.size()!=0)
-			SaveData(pipe,kss);
-			break;
+		{	if (pipe.size() != 0 || kss.size() != 0)
+			SaveData(pipe, kss);
+		break;
 		}
 		case 8:
 		{	LoadData(pipe, kss);
-			
-			Truba::MaxID = FindMaxID(pipe);
-			KS::MaxID = FindMaxID(kss);
-			break;
+
+		Truba::MaxID = FindMaxID(pipe);
+		KS::MaxID = FindMaxID(kss);
+		break;
 		}
 		case 9:
 		{ delPipe(pipe);
 		break;
 		}
 		case 10:
-		{delks(kss,pipe);
+		{delks(kss, pipe);
 		break;
 		}
 		case 11:
 		{	double param;
-			cout << "Filter diametr > ";
-			cin >> param;
-			if (pipe.size() != 0)
-			{for (int& i : FindPipeByFilter<double>(pipe, CheckByDiametr, param))
-				cout << pipe[i]<<endl;
-			}
-			else
-			{
-				cout << "Have not pipes"<<endl;
-			}
-			break;
+		cout << "Filter diametr > ";
+		cin >> param;
+		if (pipe.size() != 0)
+		{
+			for (int& i : FindPipeByFilter<double>(pipe, CheckByDiametr, param))
+				cout << pipe[i] << endl;
+		}
+		else
+		{
+			cout << "Have not pipes" << endl;
+		}
+		break;
 		}
 		case 12:
 		{
@@ -249,9 +251,9 @@ int main()
 			}
 			else
 			{
-				cout << "Have not pipes"<<endl;
+				cout << "Have not pipes" << endl;
 			};
-		break;
+			break;
 		}
 		case 13:
 		{
@@ -264,20 +266,20 @@ int main()
 					cout << kss[i] << endl;
 			}
 			else
-				cout << "Have not KSs"<<endl;
+				cout << "Have not KSs" << endl;
 			break;
-			}
+		}
 		case 14:
 		{	double param;
-			cout << "Filter % not in work > ";
-			param = GetCorrectNumber(100.0);
-			if (kss.size() != 0)
-			{
-				for (int& i : FindKSByFilter<double>(kss, CheckByProcent, param))
-					cout << kss[i] << endl;
-			}
-			else
-				cout << "Have not KSs" << endl;
+		cout << "Filter % not in work > ";
+		param = GetCorrectNumber(100.0);
+		if (kss.size() != 0)
+		{
+			for (int& i : FindKSByFilter<double>(kss, CheckByProcent, param))
+				cout << kss[i] << endl;
+		}
+		else
+			cout << "Have not KSs" << endl;
 		break;
 		}
 		case 15:
@@ -302,14 +304,14 @@ int main()
 		}
 		case 16:
 		{
-			
+
 			unordered_map <int, Truba> ::iterator nom;
 			int idout;
 			int idin;
 			cout << "Truba ID, which connected KSs: ";
 			int id = GetCorrectNumber(Truba::MaxID);
 			nom = pipe.find(id);
-			if (nom == pipe.end() || (nom->second.get_idout()!=0))
+			if (nom == pipe.end() || (nom->second.get_idout() != 0))
 				cout << "Truba with this ID is not found or used\n";
 			else
 			{
@@ -322,14 +324,14 @@ int main()
 			break;
 		}
 		case 17:
-		{	
-			graph = Graph(graph, kss, pipe);
+		{
+			graph = Graph(graph, kss, pipe, idks);
 			PrintGraph(graph);
-		break;
+			break;
 		}
 		case 18:
 		{
-			graph = Graph(graph, kss, pipe);
+			graph = Graph(graph, kss, pipe, idks);
 			PrintGraph(graph);
 			vector<int> ans;
 			topolog_sort(graph, ans);
@@ -342,7 +344,8 @@ int main()
 		}
 		case 19:
 		{
-			
+			graph = Graph(graph, kss, pipe, idks);
+			Potok(graph,kss,pipe,idks);
 			break;
 		}
 		case 0:

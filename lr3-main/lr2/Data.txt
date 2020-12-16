@@ -1,26 +1,26 @@
 7
-4
+5
 1
-23
-23
+1023
+1323
 0
 1
 2
 2
-32
-32
+1532
+1432
 0
 4
 1
 3
-65
-56
+1650
+756
 0
 2
 4
 4
-45
-45
+345
+545
 0
 0
 0
@@ -42,23 +42,8 @@
 0
 0
 0
-1
-32
-32
-2
-1
-2
-32
-65
-56
-2
-3
-56
-32
-23
-2
-4
-65
-56
-54
-2
+KS    ID: 1    Name: 32    in work 2/32    Effect= 1
+KS    ID: 2    Name: 32    in work 56/65    Effect= 2
+KS    ID: 3    Name: 56    in work 23/32    Effect= 2
+KS    ID: 4    Name: 65    in work 54/56    Effect= 2
+KS    ID: 5    Name: fgd    in work 56/65    Effect= 3

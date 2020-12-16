@@ -72,7 +72,7 @@ void topolog_sort(unordered_map<int, vector<id_in_pipe>>& g, vector<int>& ans) {
 	else cout << "Cycle";
 }
 //создание графа по условиям
-unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe)
+unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe,unordered_set<int>idks)
 {
 	graph.clear();
 	if (pipe.size() != 0)
@@ -84,6 +84,8 @@ unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pip
 				int idin = it->second.get_idin();
 				int idout = it->second.get_idout();
 				graph[idout].push_back(createStruct(id, idin));
+				idks.insert(idin);
+				idks.insert(idout);
 			}
 		}
 	return graph;
@@ -106,3 +108,73 @@ void PrintGraph(T graph)
 }
 
 
+
+void addEdge(int u, int v, int cap,int onEnd[100],int& edgeCount,int nextEdge[100],int firstEdge[100],int capacity[100])
+{
+	// Прямое ребро
+	onEnd[edgeCount] = v;                   // на конце прямого v
+	nextEdge[edgeCount] = firstEdge[u];     // добавляем в начало списка для u
+	firstEdge[u] = edgeCount;               // теперь начало списка - новое ребро
+	capacity[edgeCount++] = cap;            // устанавливаем пропускную способность
+	// Обратное ребро
+	onEnd[edgeCount] = u;                   // на конце обратного u
+	nextEdge[edgeCount] = firstEdge[v];     // добавляем в начало списка для v
+	firstEdge[v] = edgeCount;               // теперь начало списка - новое ребро
+	capacity[edgeCount++] = 0;				// устанавливаем пропускную способность
+}
+int findFlow(int u, int flow, int destinationVertex,int visited[100],int firstEdge[100],int nextEdge[100],int onEnd[100],int capacity[100]) {
+	if (u == destinationVertex) return flow; // возвращяем полученный минимум на пути
+	visited[u] = true;
+	for (int edge = firstEdge[u]; edge != 0; edge = nextEdge[edge]) {
+		int to = onEnd[edge];
+		if (!visited[to] && capacity[edge] > 0) {
+			int minResult = findFlow(to, min(flow, capacity[edge]), destinationVertex,visited,firstEdge,nextEdge,onEnd,capacity); // ищем поток в поддереве
+			if (minResult > 0) {                    // если нашли
+				capacity[edge] -= minResult;   // у прямых ребер вычетаем поток
+				//capacity[edge ^ 1] += minResult;   // к обратным прибавляем
+				return minResult;
+			}
+		}
+	}
+	return 0; // если не нашли поток из этой вершины вернем 0
+}
+void Potok(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set<int>idks)
+{
+	int capacity[100] = {0};
+	int onEnd[100] = {0};
+	int nextEdge[100] = {0};
+	int edgeCount=1;
+	int firstEdge[100] = {0};
+	int visited[100] = {0};
+
+
+int numOfVertex = idks.size();
+//int numOfEdge = 0;
+int sourceVertex, destinationVertex;
+cout << "Istok: ";
+cin >> sourceVertex;
+cout << "Stok: ";
+cin >> destinationVertex;   // считываем источник и сток
+if (destinationVertex == sourceVertex)
+cout << "Have not max potok" << endl;
+else
+{
+	for (auto it = pipe.begin(); it != pipe.end(); ++it) {
+		int u, v, cap;
+		if (it->second.get_idin() != 0)
+		{
+			u = it->second.get_idout();
+			v = it->second.get_idin();
+			cap = it->second.get_propusk();
+			addEdge(u, v, cap,onEnd,edgeCount,nextEdge,firstEdge,capacity);
+		}
+	}
+	// Нахождение максимального потока
+	int maxFlow = 0;
+	int iterationResult = 0;
+	while ((iterationResult = findFlow(sourceVertex, 1000000, destinationVertex,visited,firstEdge,nextEdge,onEnd,capacity))>0 )
+		maxFlow += iterationResult;
+	// Выводим максимальный поток
+	cout << maxFlow << endl;
+}
+}

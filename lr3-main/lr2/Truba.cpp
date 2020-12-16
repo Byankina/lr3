@@ -77,4 +77,19 @@ bool Truba::get_remont() const
 {
 	return remont;
 }
-
+int Truba::get_propusk() const
+{
+	int propusk;
+	if (d > 1420)
+		propusk = 95;
+	else if (d > 1220)
+		propusk = 55;
+	else if (d > 1020)
+		propusk = 30;
+	else if (d > 720)
+		propusk = 12;
+	else if (d > 530)
+		propusk = 5;
+	else propusk = 1;
+	return propusk;
+}
