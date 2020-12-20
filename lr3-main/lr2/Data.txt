@@ -42,8 +42,23 @@
 0
 0
 0
-KS    ID: 1    Name: 32    in work 2/32    Effect= 1
-KS    ID: 2    Name: 32    in work 56/65    Effect= 2
-KS    ID: 3    Name: 56    in work 23/32    Effect= 2
-KS    ID: 4    Name: 65    in work 54/56    Effect= 2
-KS    ID: 5    Name: fgd    in work 56/65    Effect= 3
+1
+32
+32
+2
+1
+2
+32
+65
+56
+2
+3
+56
+32
+23
+2
+4
+65
+56
+54
+2

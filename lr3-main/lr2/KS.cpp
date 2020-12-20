@@ -11,10 +11,10 @@ ostream& operator << (ostream& out, const KS& k)
 	return out;
 }
 
-std::fstream& operator>>(std::fstream& fin, KS& k)
+fstream& operator<<(fstream& fout,const KS& k)
 {
-	fin >> k.id >> k.Name >> k.kol_ceh >> k.kol_ceh_inwork >> k.effect;
-	return fin;
+	fout << k.id <<endl<< k.Name<<endl << k.kol_ceh <<endl<<k.kol_ceh_inwork<<endl << k.effect;
+	return fout;
 }
 
 int KS::MaxID = 0;

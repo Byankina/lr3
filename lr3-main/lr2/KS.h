@@ -4,8 +4,8 @@
 #include <fstream>
 class KS
 {
+	friend std::fstream& operator << (std::fstream& fout, const KS& k);
 	friend std::ostream& operator << (std::ostream& out, const KS& k);
-	friend std::fstream& operator >> (std::fstream& in, KS& k);
 	int id;
 	int kol_ceh;
 	int kol_ceh_inwork;

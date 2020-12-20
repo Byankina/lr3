@@ -133,6 +133,7 @@ void PrintMenu() {
 		<< "16. Create Graph" << endl
 		<< "17. Print Graph" << endl
 		<< "18. Topologicheskaya sortirovka" << endl
+		<< "19. Maximal potok" << endl
 		<< "0. Exit" << endl;
 }
 
@@ -147,7 +148,7 @@ int main()
 	while (1) {
 		cout << "Select action:" << endl;
 		PrintMenu();
-		i = GetCorrectNumber(19);
+		i = GetCorrectNumber(20);
 		switch (i)
 		{
 		case 1:
@@ -348,6 +349,12 @@ int main()
 			Potok(graph,kss,pipe,idks);
 			break;
 		}
+		case 20:
+		{
+			graph = Graph(graph, kss, pipe, idks);
+			Puti(graph, kss, pipe, idks);
+			break;
+		}
 		case 0:
 			return 0;
 			break;
@@ -355,3 +362,4 @@ int main()
 		cout << endl;
 	}
 }
+
