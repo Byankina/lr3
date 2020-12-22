@@ -6,9 +6,6 @@
 #include<vector>
 #include "KS.h"
 #include "Truba.h"
-#include<map>
-#include<algorithm>
-
 
 //создание структуры для вектора - строки словаря (граф)
 struct id_in_pipe
@@ -125,7 +122,7 @@ void addEdge(int u, int v, int cap,int onEnd[100],int& edgeCount,int nextEdge[10
 	firstEdge[v] = edgeCount;               // теперь начало списка - новое ребро
 	capacity[edgeCount++] = 0;				// устанавливаем пропускную способность
 }
-int findFlow(int u, int flow, int destinationVertex,int visited[100],int firstEdge[100],int nextEdge[100],int onEnd[100],int capacity[100]) {
+int findFlow(int u, int flow, int destinationVertex,int* visited,int* firstEdge,int* nextEdge,int* onEnd,int* capacity) {
 	if (u == destinationVertex) return flow; // возвращяем полученный минимум на пути
 	visited[u] = true;
 	for (int edge = firstEdge[u]; edge != 0; edge = nextEdge[edge]) {
@@ -193,10 +190,7 @@ else
 }
 
 
-
-
-
-
+//поиск кратчайшего пути
 struct item { //структура для описания элемента карты
 	int s, c; //начальный и конечный узлы
 	int v; //"вес" пути
@@ -209,8 +203,6 @@ item CreateItem(int s, int c, int v)
 	newitem.v = v;
 	return newitem;
 }
-
-
 
 int find(int s, int c,vector<item>map) { //вес пути из s и c или 0, если пути нет
 	for (int i = 0; i < map.size(); i++)
@@ -246,8 +238,7 @@ void step(int s, int f, int p,vector<item>map,bool& found,int& len,int c_len,int
 }
 
 void Puti(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe, unordered_set<int>idks)
-{
-	
+{	
 	vector<item>map;
 	int n = idks.size(); //количество вершин графа
 	vector<int>road;//номера узлов текущей "дороги"
@@ -271,8 +262,7 @@ void Puti(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>
 		for (int i = 0; i < n; i++) {
 			incl.push_back(false);
 			road.push_back(0);
-		}
-		
+		}	
 		len = c_len = waylen = 0;
 		cout << "Start: ";
 		cin >> start;
