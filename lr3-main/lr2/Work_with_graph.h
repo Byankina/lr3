@@ -75,7 +75,7 @@ void topolog_sort(unordered_map<int, vector<id_in_pipe>>& g, vector<int>& ans) {
 	else cout << "Cycle";
 }
 //создание графа по условиям
-unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe,unordered_set<int>idks)
+unordered_map<int, vector<id_in_pipe>> Graph(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>& kss, unordered_map <int, Truba>& pipe,unordered_set<int>&idks)
 {
 	graph.clear();
 	if (pipe.size() != 0)
@@ -249,7 +249,7 @@ void Puti(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>
 {
 	
 	vector<item>map;
-	int n = idks.size();; //количество вершин графа
+	int n = idks.size(); //количество вершин графа
 	vector<int>road;//номера узлов текущей "дороги"
 	vector<bool>incl; //true, если i-ая вершина включена в путь
 	vector<int> way; //искомый самый короткий путь
@@ -282,6 +282,8 @@ void Puti(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>
 			cout << "This KS as start and finish" << endl;
 		else if ((kss.find(start) == kss.end()) || (kss.find(finish) == kss.end()))
 			cout << "Have not this KSs or one of this KSs";
+		else if (idks.count(start) == 0 || idks.count(finish) == 0)
+			cout << "Have not a way" << endl;
 		else
 		{
 			road[0] = start; //первую точку внесли в маршрут
