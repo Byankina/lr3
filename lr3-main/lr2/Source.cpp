@@ -134,6 +134,7 @@ void PrintMenu() {
 		<< "17. Print Graph" << endl
 		<< "18. Topologicheskaya sortirovka" << endl
 		<< "19. Maximal potok" << endl
+		<< "20. Kratchayshiy puti" << endl
 		<< "0. Exit" << endl;
 }
 

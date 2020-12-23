@@ -171,7 +171,7 @@ else
 {
 	for (auto it = pipe.begin(); it != pipe.end(); ++it) {
 		int u, v, cap;
-		if (it->second.get_idin() != 0)
+		if (it->second.get_idin() != 0 && it->second.get_remont()==false)
 		{
 			u = it->second.get_idout();
 			v = it->second.get_idin();
@@ -251,7 +251,7 @@ void Puti(unordered_map<int, vector<id_in_pipe>>& graph, unordered_map <int, KS>
 	int c_len; //текущий "вес" маршрута
 		for (auto it = pipe.begin(); it != pipe.end(); ++it) {
 			int s, c, v;
-			if (it->second.get_idin() != 0)
+			if (it->second.get_idin() != 0 && it->second.get_remont()==false)
 			{
 				s = it->second.get_idout();
 				c = it->second.get_idin();
